@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CozyCurl | Cute Scrunchies for Every Mood</title>
+  <meta name="description" content="Soft, stylish and handmade scrunchies designed to make every hairstyle adorable. Experience the premium touch of satin and velvet.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header id="header">
+    <div class="nav-container">
+      <a href="#" class="logo" onclick="navigate('home')">CozyCurl</a>
+      
+      <nav class="nav-links" id="nav-links">
+        <a href="#" onclick="navigate('home')">Home</a>
+        <a href="#" onclick="navigate('shop')">Shop</a>
+        <a href="#" onclick="navigate('collections')">Collections</a>
+        <a href="#">Reviews</a>
+        <a href="#">Contact</a>
+      </nav>
+
+      <div class="nav-icons">
+        <button class="icon-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <button class="icon-btn" onclick="navigate('checkout')"><i class="fa-solid fa-bag-shopping"></i></button>
+        <button class="mobile-menu-toggle" id="mobile-toggle"><i class="fa-solid fa-bars"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Home Page -->
+    <div id="home-page" class="page-view active">
+      <section class="hero">
+        <div class="hero-shape"></div>
+        <div class="container hero-split">
+          <div class="hero-content">
+            <h1>Cozy vibes.<br>Cute hair.</h1>
+            <button class="btn btn-primary" onclick="navigate('shop')">Shop Now</button>
+          </div>
+          <div class="hero-image-wrapper">
+            <img src="images/hero_illustration.png" alt="Cozy cartoon girl" class="hero-illustration float-anim">
+          </div>
+        </div>
+      </section>
+
+      <section class="features">
+        <div class="container">
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
+              <h3>Handmade Magic</h3>
+              <p>Meticulously crafted by artisans</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon"><i class="fa-solid fa-leaf"></i></div>
+              <h3>Hair Friendly</h3>
+              <p>Anti-crease, anti-breakage fabrics</p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div>
+              <h3>Fast Delivery</h3>
+              <p>Shipped beautifully to your door</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="container" style="padding-bottom: 0;">
+        <div class="section-header">
+          <h2>Trending Now</h2>
+          <p>Our community's favorite picks this week</p>
+        </div>
+        <div class="product-grid" id="trending-products">
+          <!-- Filled by JS -->
+        </div>
+        <div style="text-align: center; margin-top: 40px;">
+          <button class="btn btn-secondary" onclick="navigate('shop')">View All Products</button>
+        </div>
+      </section>
+
+      <!-- CozyCurl Moments Gallery -->
+      <section class="moments-gallery">
+        <div class="container">
+          <div class="section-header">
+            <h2>CozyCurl Moments</h2>
+            <p>Tag us to be featured in our aesthetic gallery! @CozyCurl</p>
+          </div>
+          
+          <!-- Elfsight Instagram Integration -->
+          <div class="elfsight-instagram-wrapper" style="position: relative; min-height: 300px;">
+            <!-- Loading Skeletons -->
+            <div id="elfsight-skeleton" class="gallery-grid" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 1;">
+              <div class="gallery-item glass-panel skeleton-box" style="aspect-ratio: 1/1;"></div>
+              <div class="gallery-item glass-panel skeleton-box" style="aspect-ratio: 1/1;"></div>
+              <div class="gallery-item glass-panel skeleton-box" style="aspect-ratio: 1/1;"></div>
+              <div class="gallery-item glass-panel skeleton-box" style="aspect-ratio: 1/1;"></div>
+            </div>
+
+            <!-- Elfsight Instagram Feed | Untitled Instagram Feed -->
+            <script src="https://elfsightcdn.com/platform.js" async></script>
+            <div class="elfsight-app-a4112c7e-c6dc-4f52-b623-68f1c7c1397b" data-elfsight-app-lazy style="position: relative; z-index: 2;"></div>
+          </div>
+
+          <script>
+            // Hide skeleton when Elfsight widget loads and aggressively remove branding
+            const elfsightObserver = new MutationObserver((mutations, obs) => {
+              const widget = document.querySelector('[class*="elfsight-app-"]');
+              if (widget && widget.innerHTML.trim().length > 0) {
+                const skeleton = document.getElementById('elfsight-skeleton');
+                if (skeleton) {
+                  skeleton.style.opacity = '0';
+                  setTimeout(() => skeleton.style.display = 'none', 300);
+                }
+                
+                // Aggressively remove Elfsight branding elements
+                setInterval(() => {
+                  const removeBranding = (root) => {
+                    if (!root) return;
+                    root.querySelectorAll('a[href*="elfsight.com"], [class*="eapps-link"], [class*="ea-editor"], [class*="eapps-widget-toolbar"]').forEach(el => el.remove());
+                  };
+                  
+                  // Check document
+                  removeBranding(document);
+                  
+                  // Check inside widget
+                  if (widget) removeBranding(widget);
+                  
+                  // Check Shadow Root if it exists
+                  if (widget && widget.shadowRoot) removeBranding(widget.shadowRoot);
+                }, 1000);
+                
+                obs.disconnect();
+              }
+            });
+            elfsightObserver.observe(document.querySelector('.elfsight-instagram-wrapper'), { childList: true, subtree: true });
+          </script>
+
+          <div class="cta-section" style="text-align: center; margin-top: 40px; position: relative; z-index: 3;">
+            <p style="margin-bottom: 15px; font-weight: 500; color: var(--on-surface); font-family: var(--font-heading); font-size: 18px;">Join the CozyCurl Community 💖</p>
+            <a href="https://instagram.com/CozyCurl" target="_blank" class="btn btn-primary" style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 30px; box-shadow: 0 8px 20px rgba(255,182,193,0.3);">
+              <i class="fa-brands fa-instagram" style="font-size: 20px;"></i> Follow @CozyCurl
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Shop Page -->
+    <div id="shop-page" class="page-view">
+      <div class="container">
+        <div class="section-header">
+          <h2>Shop the Collection</h2>
+          <p>Handcrafted hair accessories for the modern muse</p>
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 30px; overflow-x: auto; padding-bottom: 10px;">
+          <button class="btn btn-primary">All</button>
+          <button class="btn btn-secondary">Satin</button>
+          <button class="btn btn-secondary">Velvet</button>
+          <button class="btn btn-secondary">Floral</button>
+          <button class="btn btn-secondary">Sets</button>
+        </div>
+
+        <div class="product-grid" id="all-products">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Detail Page -->
+    <div id="product-page" class="page-view">
+      <div class="container" id="pdp-container">
+        <!-- Skeleton Loading State -->
+        <div id="pdp-loading" class="pdp-layout" style="display: none;">
+          <div class="pdp-image-col skeleton-box" style="height: 500px; border-radius: var(--radius-lg);"></div>
+          <div class="pdp-info-col">
+            <div class="skeleton-box" style="height: 30px; width: 60%; margin-bottom: 10px;"></div>
+            <div class="skeleton-box" style="height: 20px; width: 40%; margin-bottom: 20px;"></div>
+            <div class="skeleton-box" style="height: 40px; width: 30%; margin-bottom: 30px;"></div>
+            <div class="skeleton-box" style="height: 100px; width: 100%; margin-bottom: 30px;"></div>
+            <div class="skeleton-box" style="height: 50px; width: 100%;"></div>
+          </div>
+        </div>
+
+        <!-- Error State -->
+        <div id="pdp-error" style="display: none; text-align: center; padding: 100px 0;">
+          <i class="fa-solid fa-box-open" style="font-size: 48px; color: var(--outline-variant); margin-bottom: 20px;"></i>
+          <h2>Product Not Found</h2>
+          <p style="color: var(--on-surface-variant); margin-bottom: 20px;">The product you're looking for doesn't exist or has been removed.</p>
+          <button class="btn btn-primary" onclick="navigate('shop')">Back to Shop</button>
+        </div>
+
+        <!-- Actual Product Content -->
+        <div id="pdp-content" class="pdp-layout" style="display: none;">
+          <!-- Left: Images -->
+          <div class="pdp-image-col">
+            <div class="pdp-main-image-wrapper glass-panel">
+              <img id="pdp-main-image" src="" alt="Product">
+            </div>
+            <div class="pdp-thumbnails">
+              <img class="pdp-thumb active" id="pdp-thumb-1" src="" onclick="switchImage(this.src, this)">
+              <img class="pdp-thumb" id="pdp-thumb-2" src="" onclick="switchImage(this.src, this)">
+              <img class="pdp-thumb" id="pdp-thumb-3" src="" onclick="switchImage(this.src, this)">
+            </div>
+          </div>
+
+          <!-- Right: Info -->
+          <div class="pdp-info-col">
+            <div class="pdp-breadcrumbs">
+              <span onclick="navigate('home')">Home</span> / <span onclick="navigate('shop')">Shop</span> / <span id="pdp-bread-category">Category</span>
+            </div>
+            
+            <h1 id="pdp-name" class="pdp-title">Product Name</h1>
+            <p id="pdp-category" class="pdp-subtitle">Category</p>
+            <h2 id="pdp-price" class="pdp-price">₹0</h2>
+            
+            <p id="pdp-description" class="pdp-desc">Description here...</p>
+            
+            <div class="pdp-stock-status" id="pdp-stock">
+              <i class="fa-solid fa-circle-check"></i> In Stock
+            </div>
+
+            <div class="pdp-options">
+              <label>Color</label>
+              <div class="color-options">
+                <div class="color-swatch active" style="background: #fadadd;"></div>
+                <div class="color-swatch" style="background: #debfc2;"></div>
+                <div class="color-swatch" style="background: #e1e1f5;"></div>
+              </div>
+            </div>
+
+            <div class="pdp-actions">
+              <div class="quantity-selector">
+                <button class="qty-btn" id="qty-minus" onclick="changePdpQty(-1)"><i class="fa-solid fa-minus"></i></button>
+                <span id="pdp-qty" class="qty-display">1</span>
+                <button class="qty-btn" id="qty-plus" onclick="changePdpQty(1)"><i class="fa-solid fa-plus"></i></button>
+              </div>
+              
+              <div class="pdp-buttons">
+                <button class="btn btn-primary" style="flex: 2;" id="pdp-add-cart-btn" onclick="addPdpToCart()">Add to Cart</button>
+                <button class="btn btn-secondary" style="flex: 1;" onclick="shareProduct()"><i class="fa-solid fa-share-nodes"></i> Share</button>
+              </div>
+            </div>
+
+            <div class="pdp-accordion glass-panel">
+              <details open>
+                <summary>Product Features</summary>
+                <ul style="padding-left: 20px; font-size: 14px; color: var(--on-surface-variant); margin-top: 10px;">
+                  <li>100% Premium Material</li>
+                  <li>Anti-crease & Anti-breakage</li>
+                  <li>Handmade with love</li>
+                </ul>
+              </details>
+              <details>
+                <summary>Delivery Information</summary>
+                <ul style="padding-left: 20px; font-size: 14px; color: var(--on-surface-variant); margin-top: 10px; list-style: none; margin-left: -20px;">
+                  <li style="margin-bottom: 8px;"><i class="fa-solid fa-truck" style="width: 20px; color: var(--primary);"></i> Free delivery on orders above ₹500</li>
+                  <li style="margin-bottom: 8px;"><i class="fa-solid fa-box" style="width: 20px; color: var(--primary);"></i> Estimated delivery in 3-5 business days</li>
+                  <li style="margin-bottom: 8px;"><i class="fa-solid fa-money-bill-wave" style="width: 20px; color: var(--primary);"></i> Cash on Delivery (COD) available</li>
+                </ul>
+              </details>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related Products -->
+      <section class="container" id="pdp-related-section" style="display: none; padding-top: var(--spacing-xl);">
+        <div class="section-header">
+          <h2>You May Also Like</h2>
+        </div>
+        <div class="product-grid" id="related-products">
+          <!-- Filled by JS -->
+        </div>
+      </section>
+
+      <!-- Customer Reviews -->
+      <section class="container" id="pdp-reviews-section" style="display: none;">
+        <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+          <h2 style="margin: 0;">Customer Reviews</h2>
+          <button class="btn btn-secondary" onclick="openReviewModal()">Write a Review</button>
+        </div>
+        
+        <div id="reviews-container" class="reviews-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 30px;">
+          <!-- Filled dynamically -->
+        </div>
+        
+        <div id="no-reviews-msg" style="display: none; text-align: center; padding: 40px; color: var(--on-surface-variant); font-style: italic;">
+          No reviews yet. Be the first to review this product 💖
+        </div>
+      </section>
+
+      <!-- Mobile Sticky CTA -->
+      <div class="mobile-sticky-cta glass-panel" id="mobile-pdp-cta">
+        <button class="btn btn-primary" style="width: 100%;" onclick="addPdpToCart()">Add to Cart</button>
+      </div>
+    </div>
+
+    <!-- Write Review Modal -->
+    <div id="review-modal" class="modal-overlay">
+      <div class="modal-content glass-panel" style="max-width: 500px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h3 style="font-family: var(--font-heading); font-size: 24px;">Write a Review 💖</h3>
+          <button onclick="closeReviewModal()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--on-surface);"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <form id="review-form" onsubmit="submitReview(event)">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" id="review-name" required placeholder="Your Name" style="width: 100%; padding: 12px; border: 1px solid var(--outline-variant); border-radius: var(--radius-sm); outline: none;">
+          </div>
+          <div class="form-group">
+            <label>Rating</label>
+            <div class="star-rating-input" style="font-size: 28px; color: #f4c150; cursor: pointer; margin-bottom: 10px; display: flex; gap: 5px;">
+              <i class="fa-solid fa-star star-btn" data-val="1"></i>
+              <i class="fa-solid fa-star star-btn" data-val="2"></i>
+              <i class="fa-solid fa-star star-btn" data-val="3"></i>
+              <i class="fa-solid fa-star star-btn" data-val="4"></i>
+              <i class="fa-solid fa-star star-btn" data-val="5"></i>
+            </div>
+            <input type="hidden" id="review-rating" value="5" required>
+          </div>
+          <div class="form-group">
+            <label>Your Review</label>
+            <textarea id="review-message" required rows="4" placeholder="What do you love about it?" style="width: 100%; padding: 12px; border: 1px solid var(--outline-variant); border-radius: var(--radius-sm); outline: none; font-family: var(--font-body); resize: vertical;"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;" id="submit-review-btn">Submit Review</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Checkout Page -->
+    <div id="checkout-page" class="page-view">
+      <div class="container">
+        <div class="section-header">
+          <h2>Secure Checkout</h2>
+          <p>Complete your order securely via WhatsApp</p>
+        </div>
+
+        <div class="checkout-container">
+          <div class="checkout-form glass-panel" style="padding: 30px;">
+            <h3 style="margin-bottom: 20px;">Delivery Details</h3>
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input type="text" placeholder="Sarah Jenkins" id="checkout-name" required>
+            </div>
+            <div class="form-group">
+              <label>Phone Number *</label>
+              <input type="tel" placeholder="+1 234 567 8900" id="checkout-phone" required>
+            </div>
+            <div class="form-group">
+              <label>Shipping Address *</label>
+              <input type="text" placeholder="123 Cozy Lane, Apt 4B" id="checkout-address" required>
+            </div>
+            <div class="form-group">
+              <label>Pincode / ZIP *</label>
+              <input type="text" placeholder="10001" id="checkout-pincode" required>
+            </div>
+            <div class="form-group">
+              <label>Order Note (Optional)</label>
+              <textarea placeholder="Any special requests or delivery instructions?" id="checkout-note" rows="3" style="width: 100%; padding: 14px; border: 1px solid var(--outline-variant); border-radius: var(--radius-sm); background: var(--surface); font-family: var(--font-body); outline: none; resize: vertical;"></textarea>
+            </div>
+            
+            <div style="margin-top: 30px; background: var(--surface-container-low); padding: 15px; border-radius: var(--radius-sm); font-size: 14px;">
+              <i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 18px; margin-right: 8px;"></i>
+              <strong>WhatsApp Checkout:</strong> To ensure the personal touch of our handmade products, we'll finalize your order via WhatsApp. No payment is taken at this step.
+            </div>
+
+            <button class="btn btn-primary" style="width: 100%; margin-top: 20px; font-size: 16px; padding: 15px;" onclick="submitCheckout()">
+              Confirm Order via WhatsApp
+            </button>
+          </div>
+
+          <div class="cart-summary glass-panel" style="padding: 30px; height: fit-content;">
+            <h3 style="margin-bottom: 20px;">Order Summary</h3>
+            <div id="cart-items-container">
+              <!-- Filled by JS -->
+            </div>
+            <div class="cart-total">
+              <span>Total</span>
+              <span id="cart-total-amount">$0.00</span>
+            </div>
+            <p style="font-size: 12px; color: var(--on-surface-variant); text-align: center;">*Final total with shipping confirmed on WhatsApp</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="logo">CozyCurl</a>
+          <p>Adorning your days with handmade love and aesthetic charm since 2024.</p>
+          <div class="social-links">
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-pinterest"></i></a>
+            <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+          </div>
+        </div>
+        
+        <div class="footer-links">
+          <h4>Boutique</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Our Story</a></li>
+            <li><a href="#">Sustainability</a></li>
+            <li><a href="#">Gift Cards</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-links">
+          <h4>Customer Care</h4>
+          <ul>
+            <li><a href="#">Shipping Policy</a></li>
+            <li><a href="#">Return Policy</a></li>
+            <li><a href="#">Track Order</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-links">
+          <h4>Newsletter</h4>
+          <p style="color: var(--on-surface-variant); font-size: 14px; margin-bottom: 10px;">Join our list for 10% off your first order!</p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); alert('Subscribed!');">
+            <input type="email" placeholder="Email address" required>
+            <button type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>Made with love by CozyCurl &copy; 2024</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
