@@ -8,8 +8,39 @@ let deleteType = null; // 'product' or 'coupon'
 
 // Initialize Admin
 document.addEventListener('DOMContentLoaded', () => {
-  fetchDashboardData();
-  setupEventListeners();
+  const isAuthenticated = sessionStorage.getItem('adminAuth') === 'true';
+  const loginOverlay = document.getElementById('admin-login-overlay');
+  const mainContent = document.getElementById('main-admin-content');
+  const loginForm = document.getElementById('admin-login-form');
+  const loginError = document.getElementById('login-error');
+
+  if (isAuthenticated) {
+    loginOverlay.classList.remove('active');
+    mainContent.style.display = 'flex';
+    fetchDashboardData();
+    setupEventListeners();
+  } else {
+    // Show login, hide main
+    loginOverlay.classList.add('active');
+    mainContent.style.display = 'none';
+
+    // Handle Login Submit
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const user = document.getElementById('admin-username').value;
+      const pass = document.getElementById('admin-password').value;
+
+      if (user === 'Cozycurlofficial' && pass === 'Cozy03728@') {
+        sessionStorage.setItem('adminAuth', 'true');
+        loginOverlay.classList.remove('active');
+        mainContent.style.display = 'flex';
+        fetchDashboardData();
+        setupEventListeners();
+      } else {
+        loginError.style.display = 'block';
+      }
+    });
+  }
 });
 
 function setupEventListeners() {
