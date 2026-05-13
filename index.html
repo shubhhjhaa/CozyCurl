@@ -7,6 +7,148 @@
   <meta name="description" content="Soft, stylish and handmade scrunchies designed to make every hairstyle adorable. Experience the premium touch of satin and velvet.">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style id="search-styles">
+    .search-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255, 240, 245, 0.5);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 10vh;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .search-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .search-container {
+      width: 90%;
+      max-width: 650px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 40px rgba(255, 182, 193, 0.2);
+      overflow: hidden;
+      transform: translateY(-20px);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid rgba(255,182,193,0.3);
+    }
+    .search-overlay.active .search-container {
+      transform: translateY(0);
+    }
+    .search-header {
+      display: flex;
+      align-items: center;
+      padding: 15px 20px;
+      border-bottom: 1px solid var(--outline-variant);
+      background: var(--surface);
+    }
+    .search-header input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 18px;
+      padding: 10px 15px;
+      font-family: var(--font-body);
+      color: var(--on-surface);
+      outline: none;
+    }
+    .search-icon-anim {
+      color: var(--primary);
+      font-size: 20px;
+    }
+    .search-results-wrapper {
+      max-height: 60vh;
+      overflow-y: auto;
+      padding: 25px;
+      background: var(--surface);
+    }
+    .search-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .search-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .search-tags span {
+      background: var(--surface-container-low);
+      padding: 10px 18px;
+      border-radius: 100px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid var(--outline-variant);
+    }
+    .search-tags span:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .search-results {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .search-result-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--surface-container-low);
+      border: 1px solid transparent;
+    }
+    .search-result-item:hover {
+      background: white;
+      border-color: var(--outline-variant);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transform: translateY(-2px);
+    }
+    .search-result-img {
+      width: 64px;
+      height: 64px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .search-result-info h4 {
+      font-size: 16px;
+      margin-bottom: 4px;
+      font-family: var(--font-heading);
+    }
+    .search-result-info p {
+      font-size: 13px;
+      color: var(--on-surface-variant);
+    }
+    .search-result-price {
+      margin-left: auto;
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 16px;
+    }
+    .search-empty {
+      text-align: center;
+      padding: 40px 0;
+      color: var(--on-surface-variant);
+    }
+    .search-empty i {
+      font-size: 40px;
+      margin-bottom: 15px;
+      color: var(--outline);
+    }
+  </style>
 </head>
 <body>
 
@@ -24,12 +166,39 @@
       </nav>
 
       <div class="nav-icons">
-        <button class="icon-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <button class="icon-btn" onclick="openSearchOverlay()"><i class="fa-solid fa-magnifying-glass"></i></button>
         <button class="icon-btn" onclick="navigate('checkout')"><i class="fa-solid fa-bag-shopping"></i></button>
         <button class="mobile-menu-toggle" id="mobile-toggle"><i class="fa-solid fa-bars"></i></button>
       </div>
     </div>
   </header>
+
+  <!-- Search Overlay -->
+  <div id="search-overlay" class="search-overlay">
+    <div class="search-container glass-panel">
+      <div class="search-header">
+        <i class="fa-solid fa-magnifying-glass search-icon-anim"></i>
+        <input type="text" id="search-input" placeholder="Search for scrunchies, satin, velvet..." autocomplete="off">
+        <button class="icon-btn" onclick="closeSearchOverlay()" style="color: var(--on-surface);"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="search-results-wrapper">
+        <!-- Initial suggestions -->
+        <div id="search-suggestions" class="search-suggestions">
+          <p class="search-title">Trending Searches</p>
+          <div class="search-tags">
+            <span onclick="setSearchQuery('Satin')">Satin Scrunchies</span>
+            <span onclick="setSearchQuery('Velvet')">Velvet Collection</span>
+            <span onclick="setSearchQuery('Floral')">Floral Designs</span>
+            <span onclick="setSearchQuery('Sets')">Gift Sets</span>
+            <span onclick="setSearchQuery('Silk')">Silk</span>
+          </div>
+        </div>
+        <!-- Live Results -->
+        <div id="search-results" class="search-results">
+        </div>
+      </div>
+    </div>
+  </div>
 
   <main>
     <!-- Home Page -->
@@ -388,6 +557,182 @@
         </div>
       </div>
     </div>
+
+    <!-- Shipping Policy Page -->
+    <div id="shipping-policy-page" class="page-view">
+      <div class="container">
+        <div class="section-header">
+          <h2>Shipping Policy</h2>
+          <p>Delivering happiness to your doorstep</p>
+        </div>
+        
+        <div class="glass-panel" style="padding: 40px; max-width: 800px; margin: 0 auto; color: var(--on-surface); font-family: var(--font-body); line-height: 1.6;">
+          <p style="margin-bottom: 20px;">At CozyCurl, we aim to deliver your orders in a smooth and timely manner across India. Please read the following shipping policy before placing an order.</p>
+
+          <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--primary); font-family: var(--font-heading);">Order Processing</h3>
+          <p style="margin-bottom: 10px;">All orders are processed within <strong>1–2 working days</strong> after order confirmation. Orders placed on Sundays or public holidays will be processed on the next working day.</p>
+          <p style="margin-bottom: 20px;">During sale periods or high order volumes, dispatch may take slightly longer than usual.</p>
+
+          <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--primary); font-family: var(--font-heading);">Delivery Timeline</h3>
+          <p style="margin-bottom: 10px;">Estimated delivery timelines:</p>
+          <ul style="margin-bottom: 15px; padding-left: 20px;">
+            <li style="margin-bottom: 8px;"><strong>Delhi, Mumbai, Bangalore, Kolkata and other metro cities:</strong> 3–5 working days</li>
+            <li style="margin-bottom: 8px;"><strong>Other cities and towns:</strong> 5–8 working days</li>
+          </ul>
+          <p style="margin-bottom: 20px; font-size: 14px; color: var(--on-surface-variant);">Please note that delivery timelines may vary depending on courier availability, weather conditions, regional restrictions, or unexpected logistical delays.</p>
+
+          <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--primary); font-family: var(--font-heading);">Shipping Charges</h3>
+          <ul style="margin-bottom: 15px; padding-left: 20px;">
+            <li style="margin-bottom: 8px;"><strong>Free shipping</strong> on orders above ₹500</li>
+            <li style="margin-bottom: 8px;">A standard shipping fee may apply to orders below ₹500</li>
+          </ul>
+          <p style="margin-bottom: 20px;">Shipping charges, if applicable, will be shown during checkout before order confirmation.</p>
+
+          <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--primary); font-family: var(--font-heading);">Order Tracking</h3>
+          <p style="margin-bottom: 20px;">Once your order has been shipped, tracking details will be shared on your WhatsApp number or contact details provided during checkout.</p>
+
+          <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--primary); font-family: var(--font-heading);">Delivery Support</h3>
+          <p style="margin-bottom: 20px;">If your package is delayed or you face any delivery-related issue, feel free to contact us through WhatsApp with your order details.</p>
+
+          <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--primary); font-family: var(--font-heading);">Incorrect Address or Contact Details</h3>
+          <p style="margin-bottom: 20px;">Customers are requested to enter accurate shipping information while placing the order. CozyCurl will not be responsible for failed deliveries or delays caused due to incorrect address or phone number provided at checkout.</p>
+
+          <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--primary); font-family: var(--font-heading);">Service Availability</h3>
+          <p style="margin-bottom: 20px;">We currently deliver across most serviceable pincodes in India. In rare cases where delivery is unavailable in a specific area, our team will contact you regarding the order status.</p>
+
+          <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--primary); font-family: var(--font-heading);">Contact Us</h3>
+          <p style="margin-bottom: 20px;">For shipping or delivery-related support, you can reach out to us through our official WhatsApp support.</p>
+
+          <p style="margin-top: 30px; font-weight: 500; text-align: center; color: var(--primary); font-size: 18px;">Thank you for shopping with CozyCurl 💖</p>
+        </div>
+      </div>
+    </div>
+    <!-- Return Policy Page -->
+    <div id="return-policy-page" class="page-view">
+      <div class="container">
+        <div class="section-header">
+          <h2>Return & Replacement Policy</h2>
+          <p>Commitment to quality and care</p>
+        </div>
+        
+        <div class="glass-panel" style="padding: 40px; max-width: 800px; margin: 0 auto; color: var(--on-surface); font-family: var(--font-body); line-height: 1.6;">
+          <p style="margin-bottom: 20px;">At CozyCurl, we put special care into maintaining the quality and hygiene of our products. Since scrunchies and hair accessories are personal-use items, we currently do not offer returns or exchanges once an order has been delivered.</p>
+
+          <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--primary); font-family: var(--font-heading);">No Return Policy</h3>
+          <p style="margin-bottom: 10px;">We do not accept returns for:</p>
+          <ul style="margin-bottom: 15px; padding-left: 20px;">
+            <li style="margin-bottom: 8px;">Change of mind</li>
+            <li style="margin-bottom: 8px;">Color preference issues</li>
+            <li style="margin-bottom: 8px;">Incorrect product selection by customer</li>
+            <li style="margin-bottom: 8px;">Minor variation in product appearance due to lighting or photography</li>
+          </ul>
+          <p style="margin-bottom: 20px; font-size: 14px; color: var(--on-surface-variant);">Please review product details carefully before placing your order.</p>
+
+          <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--primary); font-family: var(--font-heading);">Damaged or Incorrect Product</h3>
+          <p style="margin-bottom: 10px;">A replacement may be considered only in the following cases:</p>
+          <ul style="margin-bottom: 15px; padding-left: 20px;">
+            <li style="margin-bottom: 8px;">You received a damaged product</li>
+            <li style="margin-bottom: 8px;">You received the wrong item</li>
+          </ul>
+          <p style="margin-bottom: 10px;">To request a replacement, customers must contact us within 24 hours of delivery with:</p>
+          <ul style="margin-bottom: 15px; padding-left: 20px;">
+            <li style="margin-bottom: 8px;">Order details</li>
+            <li style="margin-bottom: 8px;">Clear unboxing video</li>
+            <li style="margin-bottom: 8px;">Product images showing the issue</li>
+          </ul>
+          <p style="margin-bottom: 20px; font-size: 14px; color: var(--on-surface-variant);">Requests without proper proof may not be eligible for replacement.</p>
+
+          <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--primary); font-family: var(--font-heading);">Replacement Approval</h3>
+          <p style="margin-bottom: 10px;">Replacement requests are reviewed on a case-by-case basis. CozyCurl reserves the right to approve or reject any request after verification.</p>
+          <p style="margin-bottom: 20px;">If approved, the replacement process timeline will be shared with the customer directly.</p>
+
+          <h3 style="margin-top: 30px; margin-bottom: 15px; color: var(--primary); font-family: var(--font-heading);">Important Note</h3>
+          <p style="margin-bottom: 20px;">Minor differences in color, texture, or stitching may occur due to lighting, photography, or handmade detailing and should not be considered defects.</p>
+
+          <p style="margin-top: 30px; font-weight: 500; text-align: center; color: var(--primary); font-size: 18px;">Thank you for shopping with CozyCurl 💖</p>
+        </div>
+      </div>
+    </div>
+    <!-- FAQ Page -->
+    <div id="faq-page" class="page-view">
+      <div class="container">
+        <div class="section-header">
+          <h2>Frequently Asked Questions (FAQ)</h2>
+          <p>We're here to help</p>
+        </div>
+        
+        <div class="glass-panel" style="padding: 40px; max-width: 800px; margin: 0 auto; color: var(--on-surface); font-family: var(--font-body); line-height: 1.6;">
+          <h3 style="margin-top: 20px; margin-bottom: 10px; color: var(--primary); font-family: var(--font-heading);">1. How can I place an order?</h3>
+          <p style="margin-bottom: 25px;">Simply add your favorite products to the cart, fill in your delivery details, and place the order through WhatsApp checkout.</p>
+
+          <h3 style="margin-bottom: 10px; color: var(--primary); font-family: var(--font-heading);">2. Do you offer free shipping?</h3>
+          <p style="margin-bottom: 25px;">Yes, free shipping is available on orders above ₹500.</p>
+
+          <h3 style="margin-bottom: 10px; color: var(--primary); font-family: var(--font-heading);">3. How long does delivery take?</h3>
+          <p style="margin-bottom: 10px;">Orders are usually delivered within:</p>
+          <ul style="margin-bottom: 25px; padding-left: 20px;">
+            <li style="margin-bottom: 8px;">3–5 working days for metro cities</li>
+            <li style="margin-bottom: 8px;">5–8 working days for other locations</li>
+          </ul>
+
+          <h3 style="margin-bottom: 10px; color: var(--primary); font-family: var(--font-heading);">4. Can I return or exchange my order?</h3>
+          <p style="margin-bottom: 25px;">We currently do not offer returns or exchanges. However, replacements may be considered in case of damaged or incorrect products under certain conditions.</p>
+
+          <h3 style="margin-bottom: 10px; color: var(--primary); font-family: var(--font-heading);">5. What should I do if I receive a damaged product?</h3>
+          <p style="margin-bottom: 10px;">Please contact us within 24 hours of delivery with:</p>
+          <ul style="margin-bottom: 10px; padding-left: 20px;">
+            <li style="margin-bottom: 8px;">Order details</li>
+            <li style="margin-bottom: 8px;">Clear unboxing video</li>
+            <li style="margin-bottom: 8px;">Photos of the damaged item</li>
+          </ul>
+          <p style="margin-bottom: 25px;">Our team will review the request and assist you accordingly.</p>
+
+          <h3 style="margin-bottom: 10px; color: var(--primary); font-family: var(--font-heading);">6. How can I track my order?</h3>
+          <p style="margin-bottom: 25px;">Tracking details will be shared on your WhatsApp number once the order is shipped.</p>
+
+          <h3 style="margin-bottom: 10px; color: var(--primary); font-family: var(--font-heading);">7. Do product colors look exactly the same in real life?</h3>
+          <p style="margin-bottom: 25px;">We try our best to display accurate product colors, but slight variations may occur due to lighting and screen settings.</p>
+
+          <h3 style="margin-bottom: 10px; color: var(--primary); font-family: var(--font-heading);">8. Can I cancel my order?</h3>
+          <p style="margin-bottom: 25px;">Orders can only be cancelled before they are shipped. Once dispatched, cancellation requests may not be accepted.</p>
+
+          <h3 style="margin-bottom: 10px; color: var(--primary); font-family: var(--font-heading);">9. How can I contact CozyCurl?</h3>
+          <p style="margin-bottom: 25px;">You can contact us anytime through our official WhatsApp support for order-related queries or assistance.</p>
+        </div>
+      </div>
+    </div>
+    <!-- Track Order Page -->
+    <div id="track-order-page" class="page-view">
+      <div class="container">
+        <div class="section-header">
+          <h2>Track Your Order</h2>
+          <p>Need an update on your order? Enter your details below to connect with our support team on WhatsApp for the latest order updates.</p>
+        </div>
+        
+        <div class="checkout-container" style="justify-content: center;">
+          <div class="checkout-form glass-panel" style="padding: 40px; max-width: 500px; margin: 0 auto; width: 100%;">
+            <form id="track-order-form" onsubmit="event.preventDefault(); trackOrderOnWhatsApp();">
+              <div class="form-group">
+                <label>Order ID *</label>
+                <input type="text" id="track-order-id" placeholder="e.g. ORD-12345" required style="width: 100%; padding: 14px; border: 1px solid var(--outline-variant); border-radius: var(--radius-sm); outline: none; font-family: var(--font-body); transition: border-color 0.3s ease; background: var(--surface);">
+              </div>
+              <div class="form-group">
+                <label>Registered Phone Number *</label>
+                <input type="tel" id="track-phone" placeholder="e.g. +91 9876543210" required style="width: 100%; padding: 14px; border: 1px solid var(--outline-variant); border-radius: var(--radius-sm); outline: none; font-family: var(--font-body); transition: border-color 0.3s ease; background: var(--surface);">
+              </div>
+              
+              <button type="submit" class="btn btn-primary" id="track-submit-btn" style="width: 100%; font-size: 16px; padding: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; transition: all 0.3s ease;">
+                <i class="fa-brands fa-whatsapp" style="font-size: 20px;"></i> Track on WhatsApp
+              </button>
+
+              <p style="text-align: center; font-size: 13px; color: var(--on-surface-variant); margin-top: 20px; font-style: italic;">
+                Our support team will assist you with the latest delivery updates through WhatsApp.
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
   <!-- Footer -->
@@ -417,10 +762,10 @@
         <div class="footer-links">
           <h4>Customer Care</h4>
           <ul>
-            <li><a href="#">Shipping Policy</a></li>
-            <li><a href="#">Return Policy</a></li>
-            <li><a href="#">Track Order</a></li>
-            <li><a href="#">FAQ</a></li>
+            <li><a href="#" onclick="navigate('shipping-policy')">Shipping Policy</a></li>
+            <li><a href="#" onclick="navigate('return-policy')">Return Policy</a></li>
+            <li><a href="#" onclick="navigate('track-order')">Track Order</a></li>
+            <li><a href="#" onclick="navigate('faq')">FAQ</a></li>
           </ul>
         </div>
         

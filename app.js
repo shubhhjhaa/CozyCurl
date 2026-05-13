@@ -596,3 +596,126 @@ window.submitReview = async function(e) {
     btn.innerText = 'Submit Review';
   }
 };
+
+window.trackOrderOnWhatsApp = function() {
+  const orderId = document.getElementById('track-order-id').value.trim();
+  const phone = document.getElementById('track-phone').value.trim();
+  const btn = document.getElementById('track-submit-btn');
+
+  if (!orderId || !phone) {
+    showStoreToast('Please enter both Order ID and Phone Number.', 'error');
+    return;
+  }
+
+  const originalHtml = btn.innerHTML;
+  btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Connecting...';
+  btn.style.opacity = '0.8';
+  btn.disabled = true;
+
+  const message = `Hello CozyCurl,\n\nI would like to track my order.\n\nOrder ID:\n${orderId}\n\nRegistered Phone Number:\n${phone}\n\nPlease share the latest update regarding my order.`;
+  const whatsappUrl = `https://wa.me/917004344223?text=${encodeURIComponent(message)}`;
+
+  setTimeout(() => {
+    showStoreToast('Redirecting to WhatsApp...', 'success');
+    window.location.href = whatsappUrl;
+    
+    setTimeout(() => {
+      btn.innerHTML = originalHtml;
+      btn.style.opacity = '1';
+      btn.disabled = false;
+      document.getElementById('track-order-form').reset();
+    }, 1000);
+  }, 800);
+};
+
+window.openSearchOverlay = function() {
+  document.getElementById('search-overlay').classList.add('active');
+  setTimeout(() => document.getElementById('search-input').focus(), 100);
+}
+
+window.closeSearchOverlay = function() {
+  document.getElementById('search-overlay').classList.remove('active');
+}
+
+// Close on click outside and setup listeners
+document.addEventListener('DOMContentLoaded', () => {
+  const overlay = document.getElementById('search-overlay');
+  if(overlay) {
+    overlay.addEventListener('click', (e) => {
+      if(e.target === overlay) closeSearchOverlay();
+    });
+  }
+  
+  const searchInput = document.getElementById('search-input');
+  if(searchInput) {
+    let debounceTimer;
+    searchInput.addEventListener('input', (e) => {
+      clearTimeout(debounceTimer);
+      const query = e.target.value.trim().toLowerCase();
+      
+      const suggestionsEl = document.getElementById('search-suggestions');
+      const resultsEl = document.getElementById('search-results');
+      
+      if(query.length === 0) {
+        suggestionsEl.style.display = 'block';
+        resultsEl.style.display = 'none';
+        return;
+      }
+      
+      suggestionsEl.style.display = 'none';
+      resultsEl.style.display = 'flex';
+      resultsEl.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--on-surface-variant);"><i class="fa-solid fa-circle-notch fa-spin"></i> Searching...</div>';
+      
+      debounceTimer = setTimeout(() => {
+        performSearch(query);
+      }, 300); // 300ms debounce
+    });
+  }
+});
+
+window.setSearchQuery = function(query) {
+  const searchInput = document.getElementById('search-input');
+  searchInput.value = query;
+  searchInput.dispatchEvent(new Event('input'));
+}
+
+async function performSearch(query) {
+  const resultsEl = document.getElementById('search-results');
+  
+  try {
+    const { data, error } = await supabase
+      .from('Products')
+      .select('*')
+      .or(`name.ilike.%${query}%,category.ilike.%${query}%,description.ilike.%${query}%`)
+      .limit(6);
+      
+    if (error) throw error;
+    
+    if(!data || data.length === 0) {
+      resultsEl.innerHTML = `
+        <div class="search-empty">
+          <i class="fa-solid fa-box-open"></i>
+          <p>No products found for "${query}"</p>
+          <button class="btn btn-secondary" style="margin-top:15px; padding: 10px 20px;" onclick="setSearchQuery('')">Clear Search</button>
+        </div>
+      `;
+      return;
+    }
+    
+    resultsEl.innerHTML = data.map(product => `
+      <div class="search-result-item" onclick="closeSearchOverlay(); viewProduct('${product.id}')">
+        <img src="${product.image}" class="search-result-img" alt="${product.name}">
+        <div class="search-result-info">
+          <h4>${product.name}</h4>
+          <p>${product.category}</p>
+        </div>
+        <div class="search-result-price">₹${product.price.toLocaleString('en-IN')}</div>
+      </div>
+    `).join('');
+    
+  } catch(err) {
+    console.error('Search error:', err);
+    resultsEl.innerHTML = '<div style="text-align:center; color:red; padding: 20px;">Search failed. Try again.</div>';
+  }
+}
+
